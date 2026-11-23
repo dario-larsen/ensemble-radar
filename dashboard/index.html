@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ensemble Radar — pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#board">Skip to the board</a>
+<header class="top">
+  <div class="brand">
+    <div class="pulse" aria-hidden="true"><span></span></div>
+    <div>
+      <h1>Ensemble Radar</h1>
+      <p class="tag">Five signals, one implied value, every pre-token protocol on the watchlist.</p>
+    </div>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+<section class="method" aria-label="How the radar scores">
+  <h2>How a row is scored</h2>
+  <p>Each protocol's implied value is its TVL times four signal multipliers, all read off the sealed
+  snapshot alone. No protocol name is ever special-cased.</p>
+  <ol class="signals">
+    <li><b>Value anchor · 25%</b><span>TVL × the category's own market multiple — the median mcap/TVL of the protocols <i>with</i> a token in the same category. Categories with fewer than 3 live peers use the global median.</span></li>
+    <li><b>Momentum · 25%</b><span>Seven-day TVL change, clamped to −60%…+150%, as a multiplier of 1 + growth × 0.6.</span></li>
+    <li><b>Tenure · 20%</b><span>How long it has run with no token: age since first listed, saturating at 3 years.</span></li>
+    <li><b>Reach · 10%</b><span>Chains it runs on, capped at 8: +4% per chain.</span></li>
+    <li><b>Scale · 20%</b><span>Log TVL, normalised across the board itself. It shapes the conviction score, not the value.</span></li>
+  </ol>
+  <p class="formula"><code>implied = TVL × category multiple × momentum × tenure × reach</code> &nbsp;·&nbsp; <code>ensemble = 0.20·scale + 0.25·multiple + 0.25·momentum + 0.20·tenure + 0.10·reach</code></p>
+  <p class="caveat">“Records no token” means the snapshot's record names none — a protocol on this board may still
+  have a token its DefiLlama record does not carry. An implied value is this radar's own claim about what a
+  token would be worth if the protocol's record stayed as it is; it does not predict whether or when a token
+  is issued. Above-floor protocols the house rule leaves off the watchlist stay off this board for the same
+  reason: wrapped, staked or bridged products, versioned pools and exchanges are not standalone launches.</p>
+</section>
+<main id="board" tabindex="-1" aria-busy="true">
+  <div class="controls" id="controls"></div>
+  <div class="stats" id="stats"></div>
+  <div id="detail"></div>
+  <div class="tablewrap" id="tablewrap"></div>
+  <div id="livewrap"></div>
+</main>
+<footer>
+  <p id="foot-model"></p>
+  <p>Source: DefiLlama protocols endpoint, fetched once and sealed in the snapshot; the board is recomputed
+  from that snapshot on every run, with no network. Board rows carry a seven-step farm plan with a cost and
+  a time for every step. For the judge: the model lives in <code>lib/ensemble.ts</code> — see
+  <code>calibrate</code> for the category multiples, <code>impliedValue</code> for the value and
+  <code>signalScores</code> for the five bars; the dossier writer is <code>lib/dossier.ts</code>.</p>
+</footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
